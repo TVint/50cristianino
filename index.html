@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>50th Birthday | Night Event</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+    <style>
+        /* === VARIABILI COLORE === */
+        :root {
+            --bg-dark: #0a1128;      
+            --accent-gold: #e6ba50;  
+            --text-light: #f4f4f6;   
+            --bg-footer: #d2b48c;    
+            
+            --font-title: 'Cormorant Garamond', serif;
+            --font-body: 'Jost', sans-serif;
+        }
+
+        /* === RESET & BASE === */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        html { scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: var(--font-body);
+            font-weight: 200;
+            overflow-x: hidden;
+            position: relative;
+            padding-top: 50px;
+        }
+
+        strong {
+            font-weight: 900;
+        }
+
+        h1, h2, h3, h4, h5, p {
+            letter-spacing: 1.25px;
+            font-weight:300;
+        }
+
+        /* === STILE LOADER (AGGIORNATO PER SLIDE UP) === */
+        #page-loader {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: var(--accent-gold);
+            z-index: 999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* La transizione ora agisce solo sullo spostamento (Y) con una curva cinematografica */
+            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        /* Nuova classe di chiusura: sposta il loader fuori dallo schermo in alto */
+        .loader-slide-up {
+            transform: translateY(-100%);
+            pointer-events: none;
+        }
+
+        /* Grana specifica per il loader per non avere distacchi */
+        .loader-noise {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; opacity: 0.25;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        .loader-content {
+            text-align: center;
+            color: var(--bg-dark); /* Testo Blu Notte su fondo Giallo */
+            position: relative;
+            z-index: 10;
+        }
+
+        .loader-title {
+            font-family: var(--font-title);
+            font-size: 7.5rem;
+            line-height: 0.75;
+            margin-top: -25px;
+        }
+
+        .loader-subtitle {
+            font-family: var(--font-title);
+            font-size: 1.5rem;
+            line-height: 1;
+            margin-bottom: 10px;
+            font-weight: 200;
+        }
+
+        .loader-name {
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        /* Animazione dell'Onda come Loader */
+        .wave-container {
+            width: 120px;
+            height: 20px;
+            margin: 30px auto 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wave-svg {
+            width: 240px; /* Più larga per permettere lo scorrimento del loop */
+            height: 100%;
+            position: absolute;
+            bottom: 0; left: 0;
+            animation: waveMove 1.4s linear infinite;
+        }
+
+        @keyframes waveMove {
+            0% { transform: translateX(-120px); }
+            100% { transform: translateX(0); }
+        }
+
+        /* === EFFETTO WOW DI APERTURA SULLA HERO === */
+        /* Lo stato iniziale della Hero sarà leggermente rimpicciolito e sfocato */
+        .hero-content {
+            transform: scale(0.92);
+            filter: blur(10px);
+            opacity: 0;
+            transition: transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                        filter 1s ease-out, 
+                        opacity 1s ease-out;
+            transition-delay: 0.3s;
+        }
+
+        /* Classe d'attivazione applicata via JS */
+        .hero-animate .hero-content {
+            transform: scale(1);
+            filter: blur(0);
+            opacity: 1;
+        }
+
+        /* Classe di chiusura loader */
+        .loader-fade-out {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none; /* Fondamentale: impedisce al loader invisibile di bloccare la pagina */
+            transform: scale(1.05);
+        }
+
+        /* === GRANA DELLA SABBIA (NOISE OVERLAY) === */
+        .noise-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none; z-index: 50;
+            opacity: 0.075; /* Regola l'intensità della grana qui */
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.25' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* === CONTENITORE MOBILE FIRST (Max 1080px) === */
+        .container {
+            max-width: 380px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+            padding: 0 5%;
+        }
+
+        /* === SEZIONE 1: HERO & VIDEO === */
+        .hero {
+            height: calc(100vh - 40px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+        
+        .video-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            object-fit: cover;
+            z-index: 1;
+            opacity: 0.5;
+        }
+
+        .video-filter {
+            position: absolute;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            /* Lascia il video visibile sopra e sfuma verso il fondo solido alla fine */
+            background: linear-gradient(
+                180deg, 
+                rgba(10, 17, 40, 0.2) 0%, 
+                rgba(10, 17, 40, 0.5) 50%, 
+                rgba(10, 17, 40, 0.8) 85%, 
+                rgba(10, 17, 40, 1) 100%
+            );
+            z-index: 2;
+        }
+
+        .hero-content {
+            z-index: 10;
+            max-width: 380px;
+            margin: -150px auto 0 auto;
+        }
+
+        .hero h1{
+            font-family: var(--font-title);
+            line-height: 0.75;
+            margin: 0;
+            color: var(--text-light);
+        }
+
+        .title-container{
+            margin: 0 auto;
+        }
+        .hero h1.anni{
+            margin-top: -25px;
+            text-align: left;
+            font-size: 150px;
+        }
+
+        .hero h1.anni sub{
+            color: var(--accent-gold);
+            top: -25px;
+            position: relative;
+            font-size: 100px;
+        }
+
+        .hero h1.subtitle {
+            position: relative;
+            text-align: left;
+            font-size: 1.5rem;
+            line-height: 1;
+            margin-bottom: 10px;
+            top: -20px;
+            left: 60px;
+        }
+
+        .hero h2 {
+            font-size: clamp(1rem, 4vw, 1.5rem);
+            text-transform: uppercase;
+            color: var(--accent-gold);
+        }
+
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0.7;
+        }
+        .scroll-line {
+            width: 2.5px;
+            height: 60px;
+            background: rgba(255,255,255,0.2);
+            position: relative;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        .scroll-line::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 2.5px; height: 20px;
+            background: var(--accent-gold);
+            animation: scrollDown 2s infinite ease-in-out;
+        }
+        @keyframes scrollDown {
+            0% { top: -20px; }
+            100% { top: 60px; }
+        }
+
+        /* === SEZIONE 2: DETTAGLI === */
+        .details-section {
+            padding: 100px 0;
+            text-align: center;
+            padding: 25px;
+        }
+        .details-section h3 {
+            font-family: var(--font-title);
+            font-size: 2.5rem;
+            color: var(--accent-gold);
+            margin-bottom: 30px;
+            line-height: 1;
+        }
+        .details-section p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            max-width: 600px;
+            margin: 0 auto 40px auto;
+        }
+
+        /* === SEZIONE 3: RSVP & WALL === */
+        .rsvp-section {
+            padding: 80px 0 120px 0;
+        }
+        .form-container {
+            max-width: 380px;
+            margin: 0 auto 80px auto;
+            background: rgba(255,255,255,0.03);
+            padding: 40px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+        }
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-gold);
+        }
+        input[type="text"], input[type="number"], textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            color: var(--text-light);
+            padding: 10px 0;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-bottom-color: var(--accent-gold);
+        }
+        .radio-group { display: flex; gap: 15px; margin-top: 10px; }
+        .radio-group label { text-transform: none; color: var(--text-light); font-size: 0.95rem; display: flex; align-items: center; gap: 8px;}
+        
+        button.submit-btn {
+            background-color: var(--accent-gold);
+            color: var(--bg-dark);
+            border: none;
+            padding: 15px 30px;
+            font-family: var(--font-body);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+        button.submit-btn:hover { background-color: #f7ce68; }
+
+        /* Muro dei Messaggi (CSS Grid 2/3 Colonne) */
+        .wall-title {
+            text-align: center;
+            font-family: var(--font-title);
+            color: var(--accent-gold);
+            font-size: 2rem;
+            margin-bottom: 40px;
+        }
+        .message-wall {
+            display: grid;
+            gap: 20px;
+            /* Su mobile 1 colonna, poi 2, poi max 3 */
+            grid-template-columns: 1fr; 
+        }
+        
+        @media (min-width: 600px) {
+            .message-wall { grid-template-columns: repeat(2, 1fr); }
+        }
+        
+        .message-card {
+            background: rgba(255,255,255,0.05);
+            padding: 25px;
+            border-left: 2px solid var(--accent-gold);
+            font-style: italic;
+        }
+        .message-card .author {
+            display: block;
+            margin-top: 15px;
+            font-style: normal;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            color: var(--accent-gold);
+        }
+
+        /* === SEZIONE 4: FOOTER DONAZIONE === */
+        .footer-bike {
+            background-color: var(--accent-gold);
+            color: var(--bg-dark);
+            padding: 80px 20px;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+        .footer-bike h3 {
+            font-family: var(--font-title);
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            line-height: 1;
+        }
+        .footer-bike p {
+            font-size: 1.1rem;
+            margin: 0 auto;
+        }
+
+        /* === BARRA CONTROLLO MUSICA === */
+        #music-container-bar {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 50px;
+            background-color: var(--accent-gold); z-index: 900;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; transition: background-color 0.3s ease;
+        }
+        #music-container-bar:hover { background-color: #f7ce68; }
+        
+        .music-text {
+            color: var(--bg-dark);
+            font-size: 0.75rem;
+            font-weight: 500; /* Leggermente più fine, in stile Jost */
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 12px; /* Spazio tra icona e testo */
+        }
+
+        /* Contenitore dell'equalizzatore */
+        .eq-icon {
+            display: flex;
+            align-items: flex-end;
+            gap: 3px;
+            height: 12px; /* Altezza massima dell'animazione */
+        }
+
+        /* Le singole barre dell'equalizzatore */
+        .eq-icon span {
+            display: block;
+            width: 3px;
+            background-color: var(--bg-dark);
+            border-radius: 2px;
+            transition: height 0.3s ease;
+            height: 3px; /* Stato inziale: pause (pallini) */
+        }
+
+        /* Quando la musica è attiva (classe 'playing' aggiunta via JS) */
+        .eq-icon.playing span {
+            animation: eqPlay 1s infinite alternate ease-in-out;
+        }
+
+        /* Sfalsiamo l'animazione delle barre per l'effetto ritmo */
+        .eq-icon.playing span:nth-child(1) { animation-delay: 0.1s; }
+        .eq-icon.playing span:nth-child(2) { animation-delay: 0.3s; animation-duration: 0.8s; }
+        .eq-icon.playing span:nth-child(3) { animation-delay: 0.5s; animation-duration: 1.2s; }
+
+        @keyframes eqPlay {
+            0% { height: 3px; }
+            50% { height: 10px; }
+            100% { height: 14px; } /* Alcune barre andranno leggermente fuori per dinamismo */
+        }
+
+        .brand-logo-hero {
+            max-width: 75px;
+            margin-bottom: 50px; display: block; margin-left: auto; margin-right: auto;
+        }
+
+        /* === STILE CONTATORE INVITATI === */
+        .guest-counter-container {
+            text-align: center;
+            margin-bottom: 50px;
+            opacity: 0; /* Parte invisibile per l'animazione di entrata */
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        /* Classe aggiunta dal JS quando appare nello schermo */
+        .guest-counter-container.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .counter-number {
+            font-family: var(--font-title);
+            font-size: 5rem;
+            color: var(--accent-gold);
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .counter-label {
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--text-light);
+            margin-top: 18px;
+        }
+
+        /* === EFFETTO PARTICELLE (FAVILLE/LUCCIOLE) === */
+        #particles-container {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none; /* Fondamentale: non blocca i click sui bottoni */
+            z-index: 4; /* Sopra il video (2), ma sotto i testi (10) */
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            background-color: var(--accent-gold);
+            border-radius: 50%;
+            /* Crea l'effetto "luce magica" attorno al puntino */
+            box-shadow: 0 0 6px 1px var(--accent-gold); 
+            bottom: -10px; /* Partono da fuori schermo in basso */
+            opacity: 0;
+            animation: floatUp linear infinite;
+        }
+
+        /* Animazione di fluttuazione verso l'alto */
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(0.5); opacity: 0; }
+            20% { opacity: 0.4; } /* Diventano visibili */
+            80% { opacity: 0.2; } /* Iniziano a svanire */
+            100% { transform: translateY(-100vh) scale(1.2); opacity: 0; } /* Spariscono in cima */
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="particles-container"></div>
+
+    <audio id="bg-music" loop src="https://cdn.pixabay.com/download/audio/2026/05/22/audio_29c6fef01d.mp3"></audio>
+
+    <div id="music-container-bar">
+        <div class="music-text" id="music-btn-text">
+            <div class="eq-icon" id="eq-animation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <span class="music-label">Attiva la musica di sottofondo</span>
+        </div>
+    </div>
+
+    <div id="page-loader">
+        <div class="loader-noise"></div>
+        
+        <div class="loader-content">
+            <div class="wave-container" style="width: 120px; height: 20px; margin: 20px auto; position: relative; overflow: hidden;"><svg class="wave-svg" viewBox="0 0 240 20" xmlns="http://www.w3.org/2000/svg"><path d="M 0 10 Q 15 7, 30 10 T 60 10 T 90 10 T 120 10 T 150 10 T 180 10 T 210 10 T 240 10" fill="none" stroke="var(--bg-dark)" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+            <h1 class="loader-title">50<sub>°</sub></h1>
+            <h1 class="loader-subtitle">compleanno</h1>
+            <h2 class="loader-name">Cristianino</h2>
+            <div class="wave-container" style="width: 120px; height: 20px; margin: 20px auto; position: relative; overflow: hidden;"><svg class="wave-svg" viewBox="0 0 240 20" xmlns="http://www.w3.org/2000/svg"><path d="M 0 10 Q 15 7, 30 10 T 60 10 T 90 10 T 120 10 T 150 10 T 180 10 T 210 10 T 240 10" fill="none" stroke="var(--bg-dark)" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        </div>
+    </div>
+
+    <div class="noise-overlay"></div>
+
+    <section class="hero">
+        <video class="video-bg" autoplay loop muted playsinline>
+            <source src="video.mp4" type="video/mp4">
+        </video>
+        <div class="video-filter"></div>
+
+        <div class="container hero-content">
+            <img src="logo.svg" class="brand-logo-hero" alt="Logo">
+            <h2>Sei stato<br>invitato al</h2>
+            <div class="wave-container" style="width: 120px; height: 20px; margin: 20px auto; position: relative; overflow: hidden;"><svg class="wave-svg" viewBox="0 0 240 20" xmlns="http://www.w3.org/2000/svg"><path d="M 0 10 Q 15 7, 30 10 T 60 10 T 90 10 T 120 10 T 150 10 T 180 10 T 210 10 T 240 10" fill="none" stroke="var(--accent-gold)" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+            <div class="title-container">
+                <h1 class="anni">50<sub>°</sub></h1>
+                <h1 class="subtitle">compleanno</h1>
+            </div>
+            <div class="wave-container" style="width: 120px; height: 20px; margin: 20px auto; position: relative; overflow: hidden;"><svg class="wave-svg" viewBox="0 0 240 20" xmlns="http://www.w3.org/2000/svg"><path d="M 0 10 Q 15 7, 30 10 T 60 10 T 90 10 T 120 10 T 150 10 T 180 10 T 210 10 T 240 10" fill="none" stroke="var(--accent-gold)" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+            <h2>Cristianino</h2>
+        </div>
+
+        <div class="scroll-indicator">
+            <span style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px;">partecipa</span>
+            <span style="font-size: 1rem; text-transform: uppercase; letter-spacing: 2px;">↓</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <section class="details-section container">
+        <h3>Una notte speciale</h3>
+        <p>Cinquanta giri intorno al sole meritano di essere celebrati nel posto giusto, con la musica giusta e le persone migliori.<p>
+        <p>Vi aspetto per un aperitivo al tramonto che sfumerà in una notte di festa, bassi profondi e brezza marina.</p>
+        <p style="color:var(--accent-gold); font-family: var(--font-title); font-size: 2rem; line-height: 1;"><strong>19 Agosto</strong> ore 19:30</p>
+        <p><strong>SAND BEACH CLUB</strong><br>— Sottomarina —</p>
+    </section>
+
+    <section class="rsvp-section container">
+        <div class="form-container">
+            <form action="#" method="POST">
+                <div class="form-group">
+                    <label for="nome">Nome e Cognome</label>
+                    <input type="text" id="nome" name="nome" required>
+                </div>
+                <div class="form-group">
+                    <label for="ospiti">Numero di Ospiti (incluso te)</label>
+                    <input type="number" id="ospiti" name="ospiti" min="1" max="5" required>
+                </div>
+                <div class="form-group">
+                    <label>Sei un DJ? Porti i dischi per suonare?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="dj" value="si"> Certo, preparo la borsa!</label>
+                        <label><input type="radio" name="dj" value="no" checked> No, stasera solo drink.</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="messaggio">Lascia un messaggio sulla bacheca</label>
+                    <textarea id="messaggio" name="messaggio" rows="3" placeholder="Scrivi i tuoi auguri..."></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Conferma Presenza</button>
+            </form>
+        </div>
+
+        <div id="live-guest-counter" class="guest-counter-container">
+            <div class="counter-number" data-target="64">0</div>
+        <div class="counter-label">Amici confermati</div>
+            
+        </div>
+
+        <div class="message-wall">
+            <div class="message-card">
+                "Pronto a far tremare la spiaggia. Auguri per questo mezzo secolo!"
+                <span class="author">— Marco & Anna</span>
+            </div>
+            <div class="message-card">
+                "Ho già preparato la selezione in vinile, preparati a ballare fino all'alba."
+                <span class="author">— DJ Sandrino</span>
+            </div>
+            <div class="message-card">
+                "Non potevamo assolutamente mancare. Ci vediamo al bancone."
+                <span class="author">— Elena</span>
+            </div>
+             <div class="message-card">
+                "50 è solo un numero, l'importante è il groove. A sabato!"
+                <span class="author">— Paolo T.</span>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer-bike">
+        <div class="container">
+            <h3>Un piccolo pensiero</h3>
+            <p>Non servono regali, la vostra presenza è tutto ciò che desidero.</p>
+            <div class="wave-container" style="width: 120px; height: 20px; margin: 20px auto; position: relative; overflow: hidden;"><svg class="wave-svg" viewBox="0 0 240 20" xmlns="http://www.w3.org/2000/svg"><path d="M 0 10 Q 15 7, 30 10 T 60 10 T 90 10 T 120 10 T 150 10 T 180 10 T 210 10 T 240 10" fill="none" stroke="var(--bg-dark)" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+            <p>Se avete piacere di partecipare al <strong>"Fondo per la Nuova Bici<br> di Cristianino"</strong></p>
+            <div class="wave-container" style="width: 120px; height: 20px; margin: 20px auto; position: relative; overflow: hidden;"><svg class="wave-svg" viewBox="0 0 240 20" xmlns="http://www.w3.org/2000/svg"><path d="M 0 10 Q 15 7, 30 10 T 60 10 T 90 10 T 120 10 T 150 10 T 180 10 T 210 10 T 240 10" fill="none" stroke="var(--bg-dark)" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+            <p>Troverete un angolo dedicato al locale la sera della festa.</p>
+        </div>
+    </footer>
+
+</body>
+
+<script>
+    // Forza la chiusura del loader e avvia l'animazione della Hero
+    function revealPage() {
+        const loader = document.getElementById('page-loader');
+        const body = document.body;
+        
+        if(loader) {
+            // Applica l'effetto sipario verso l'alto
+            loader.classList.add('loader-slide-up');
+        }
+        
+        // Attiva i testi della Hero con un leggero ritardo per farli coincidere con l'apertura
+        setTimeout(() => {
+            body.classList.add('hero-animate');
+        }, 300); // 300ms di ritardo per un incastro visivo perfetto
+    }
+
+    // Timer fisso a 1.8 secondi
+    setTimeout(revealPage, 1800);
+
+    // === GESTIONE TRACCIA AUDIO & AUTOPLAY AL PRIMO TOCCO ===
+    const musicBar = document.getElementById('music-container-bar');
+    const audioTrack = document.getElementById('bg-music');
+    const textLabel = document.querySelector('.music-label');
+    const eqIcon = document.getElementById('eq-animation');
+    let isPlaying = false;
+
+    // Funzione che accende l'audio e aggiorna l'interfaccia (l'equalizzatore)
+    const playAudio = () => {
+        audioTrack.play().then(() => {
+            textLabel.innerHTML = 'Audio Attivo — Clicca per disattivare';
+            eqIcon.classList.add('playing');
+            isPlaying = true;
+        }).catch(error => {
+            console.log("In attesa di interazione per sbloccare l'audio...");
+        });
+    };
+
+    // 1. IL TRUCCO DELL'AUTOPLAY AL PRIMO TOCCO/SCROLL
+    // Cattura il primissimo tocco o scroll sullo schermo e fa partire la musica
+    const startOnFirstInteraction = () => {
+        if (!isPlaying) {
+            playAudio();
+        }
+        // Una volta partita, rimuoviamo questi "ascoltatori" per non appesantire la pagina
+        document.removeEventListener('click', startOnFirstInteraction);
+        document.removeEventListener('touchstart', startOnFirstInteraction);
+        document.removeEventListener('scroll', startOnFirstInteraction);
+    };
+
+    // Mettiamo il sito in ascolto del primo movimento dell'utente
+    document.addEventListener('click', startOnFirstInteraction);
+    document.addEventListener('touchstart', startOnFirstInteraction, { passive: true });
+    document.addEventListener('scroll', startOnFirstInteraction, { passive: true });
+
+    // 2. GESTIONE MANUALE TRAMITE LA BARRA IN ALTO
+    // L'utente può comunque cliccare sulla barra gialla per spegnere o riaccendere
+    musicBar.addEventListener('click', (e) => {
+        e.stopPropagation(); // Evita conflitti con il click globale qui sopra
+        if (!isPlaying) {
+            playAudio();
+        } else {
+            audioTrack.pause();
+            textLabel.innerHTML = 'Attiva la musica di sottofondo';
+            eqIcon.classList.remove('playing');
+            isPlaying = false;
+        }
+    });
+
+    // === ANIMAZIONE CONTATORE INVITATI CON INTERSECTION OBSERVER ===
+    const counterContainer = document.getElementById('live-guest-counter');
+    const counterElement = document.querySelector('.counter-number');
+
+    if (counterContainer && counterElement) {
+        const target = parseInt(counterElement.getAttribute('data-target'), 10);
+        let animated = false;
+
+        // Funzione che fa salire il numero da 0 al target
+        const updateCounter = () => {
+            const current = parseInt(counterElement.innerText, 10);
+            // Calcola l'incremento (più il numero è alto, più va veloce)
+            const increment = Math.ceil(target / 40); 
+
+            if (current < target) {
+                counterElement.innerText = current + increment > target ? target : current + increment;
+                setTimeout(updateCounter, 40); // Velocità dell'animazione (40ms)
+            } else {
+                counterElement.innerText = target;
+            }
+        };
+
+        // Observer: fa partire l'animazione solo quando l'utente scrolla e vede il contatore
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !animated) {
+                    counterContainer.classList.add('visible');
+                    updateCounter();
+                    animated = true; // Lo fa animare una sola volta
+                }
+            });
+        }, { threshold: 0.5 }); // Parte quando il 50% del contatore è visibile
+
+        observer.observe(counterContainer);
+    }
+
+    // === GENERATORE EFFETTO PARTICELLE (FAVILLE) ===
+    function createParticles() {
+        const container = document.getElementById('particles-container');
+        if (!container) return;
+        
+        const particleCount = 20; // Numero di lucciole/faville. Tienilo basso per l'eleganza.
+        
+        for (let i = 0; i < particleCount; i++) {
+            const p = document.createElement('div');
+            p.classList.add('particle');
+            
+            // Assegnazione parametri random per renderle organiche
+            const size = Math.random() * 2 + 1; // Grandezza da 1px a 3px
+            const posX = Math.random() * 100; // Posizione orizzontale (0-100vw)
+            const duration = Math.random() * 15 + 10; // Velocità di salita (da 10 a 25 secondi)
+            const delay = Math.random() * 10; // Ritardo di partenza (da 0 a 10 secondi)
+            
+            // Applica i valori generati
+            p.style.width = `${size}px`;
+            p.style.height = `${size}px`;
+            p.style.left = `${posX}vw`;
+            p.style.animationDuration = `${duration}s`;
+            p.style.animationDelay = `${delay}s`;
+            
+            container.appendChild(p);
+        }
+    }
+
+    // Avvia le particelle dopo che il loader si è alzato
+    setTimeout(createParticles, 2000);
+
+</script>
+
+</html>
