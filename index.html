@@ -2,15 +2,16 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>50th Birthday | Night Event</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    
+    <title>50° Cristianino @ Sand Beach Club</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
     <style>
         /* === VARIABILI COLORE === */
         :root {
             --bg-dark: #0a1128;      
-            --accent-gold: #e6ba50;  
+            --accent-gold: #e2cfc1;  
             --text-light: #f4f4f6;   
             --bg-footer: #d2b48c;    
             
@@ -30,7 +31,18 @@
             font-weight: 200;
             overflow-x: hidden;
             position: relative;
-            padding-top: 50px;
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* IE/Edge */
+            user-select: none; /* Standard */
+            touch-action: pan-y; 
+        }
+
+        input, textarea {
+            -webkit-user-select: auto;
+            -moz-user-select: auto;
+            -ms-user-select: auto;
+            user-select: auto;
         }
 
         strong {
@@ -42,7 +54,6 @@
             font-weight:300;
         }
 
-        /* === STILE LOADER (AGGIORNATO PER SLIDE UP) === */
         #page-loader {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -96,6 +107,7 @@
             font-weight: 400;
             letter-spacing: 4px;
             text-transform: uppercase;
+            margin-top: 10px;
         }
 
         /* Animazione dell'Onda come Loader */
@@ -167,7 +179,7 @@
 
         /* === SEZIONE 1: HERO & VIDEO === */
         .hero {
-            height: calc(100vh - 40px);
+            height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -181,13 +193,12 @@
             top: 0; left: 0; width: 100vw; height: 100vh;
             object-fit: cover;
             z-index: 1;
-            opacity: 0.5;
+            opacity: 0.75;
         }
 
         .video-filter {
             position: absolute;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            /* Lascia il video visibile sopra e sfuma verso il fondo solido alla fine */
             background: linear-gradient(
                 180deg, 
                 rgba(10, 17, 40, 0.2) 0%, 
@@ -235,6 +246,15 @@
             margin-bottom: 10px;
             top: -20px;
             left: 60px;
+        }
+
+        .hero h1.subsubtitle{
+            color: var(--accent-gold);
+            position: relative;
+            text-align: right;
+            font-size: 1.5rem;
+            top: -15px;
+            right: -10px;
         }
 
         .hero h2 {
@@ -408,6 +428,56 @@
             margin: 0 auto;
         }
 
+        /* =========================================
+        BOX INTERATTIVO COPIA IBAN (FOOTER)
+        ========================================= */
+
+        .iban-container {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 25px;
+            background: rgba(10, 17, 40, 0.05); /* Sfondo leggermente scuro sul giallo/sabbia */
+            border: 1px dashed var(--bg-dark); /* Bordo tratteggiato elegante */
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .iban-container:active {
+            transform: scale(0.96); /* Effetto "pressione" del tasto su mobile */
+        }
+
+        .iban-label {
+            display: block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            color: var(--bg-dark);
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .iban-number {
+            font-family: var(--font-body);
+            font-size: 0.75rem;
+            font-weight: 900;
+            color: var(--bg-dark);
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+        }
+
+        /* Classe aggiunta temporaneamente dal JS quando l'IBAN viene copiato */
+        .iban-container.iban-success {
+            background-color: var(--bg-dark);
+            border: 1px solid var(--bg-dark);
+        }
+
+        .iban-container.iban-success .iban-label,
+        .iban-container.iban-success .iban-number {
+            color: var(--accent-gold); /* Testo diventa giallo oro sul blu scuro */
+        }
+
         /* === BARRA CONTROLLO MUSICA === */
         #music-container-bar {
             position: fixed; top: 0; left: 0; width: 100vw; height: 50px;
@@ -415,7 +485,7 @@
             display: flex; justify-content: center; align-items: center;
             cursor: pointer; transition: background-color 0.3s ease;
         }
-        #music-container-bar:hover { background-color: #f7ce68; }
+        #music-container-bar:hover { background-color: var(--accent-gold); }
         
         .music-text {
             color: var(--bg-dark);
@@ -463,14 +533,14 @@
         }
 
         .brand-logo-hero {
-            max-width: 75px;
+            max-width: 150px;
             margin-bottom: 50px; display: block; margin-left: auto; margin-right: auto;
         }
 
         /* === STILE CONTATORE INVITATI === */
         .guest-counter-container {
             text-align: center;
-            margin-bottom: 50px;
+            margin: 50px auto;
             opacity: 0; /* Parte invisibile per l'animazione di entrata */
             transform: translateY(20px);
             transition: opacity 0.8s ease-out, transform 0.8s ease-out;
@@ -527,6 +597,91 @@
             100% { transform: translateY(-100vh) scale(1.2); opacity: 0; } /* Spariscono in cima */
         }
 
+        /* =========================================
+        ICONE ANIMATE MINIMALI (CSS DRAWING)
+        ========================================= */
+
+        /* --- 1. TORTA CON CANDELINE (Loader - Colore Blu Scuro) --- */
+        .cake-icon-anim {
+            position: relative;
+            width: 60px; height: 50px;
+            margin: 0 auto 25px auto;
+            border-bottom: 2px solid var(--bg-dark); /* Base torta */
+        }
+        /* Corpo della torta (piano superiore) */
+        .cake-icon-anim::before {
+            content: ''; position: absolute;
+            bottom: 2px; left: 10px; width: 40px; height: 25px;
+            border: 2px solid var(--bg-dark); border-bottom: none;
+            border-radius: 4px 4px 0 0;
+        }
+        /* Le 3 candeline */
+        .cake-icon-anim::after {
+            content: ''; position: absolute;
+            bottom: 27px; left: 15px; width: 30px; height: 12px;
+            /* Disegna 3 linee verticali usando i gradienti */
+            background-image: linear-gradient(to right, var(--bg-dark) 2px, transparent 2px);
+            background-size: 14px 100%; /* Spaziatura candele */
+            background-repeat: repeat-x;
+        }
+
+        /* Le Fiammelle animate */
+        .flames {
+            position: absolute; bottom: 39px; left: 15px;
+            width: 30px; height: 10px; display: flex; justify-content: space-between;
+        }
+        .flames span {
+            width: 4px; height: 7px;
+            background-color: var(--bg-dark);
+            border-radius: 50% 50% 20% 20%; /* Forma goccia */
+            opacity: 0.8;
+            animation: flicker 0.6s infinite alternate ease-in-out;
+        }
+        /* Sfasiamo l'animazione delle fiamme */
+        .flames span:nth-child(2) { animation-delay: 0.2s; animation-duration: 0.5s; }
+        .flames span:nth-child(3) { animation-delay: 0.4s; animation-duration: 0.7s; }
+
+        /* Animazione tremolio fiamme */
+        @keyframes flicker {
+            0% { transform: scaleY(1) translateY(0); opacity: 0.8; }
+            100% { transform: scaleY(1.2) translateY(-1px); opacity: 1; filter: blur(0.5px); }
+        }
+
+
+        /* =========================================
+        ANIMAZIONE SVG BICI (Ruote Rotanti)
+        ========================================= */
+
+        .bike-svg-container {
+            width: 90px; /* Controlla quanto grande vuoi la bici */
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+        }
+
+        .animated-bike {
+            width: 100%;
+            height: auto;
+            overflow: visible;
+        }
+
+        .spinning-wheel {
+            transform-origin: 0 0; /* Il centro esatto del gruppo <g> */
+            animation: svg-spin 1.5s linear infinite; /* 1.5s definisce la velocità della pedalata */
+        }
+
+        @keyframes svg-spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        p.closing-text{
+            color: var(--text-light);
+            opacity: 0.25;
+            font-size: 1rem;
+            text-align: center;
+            margin: 50px auto 0 auto;
+        }
+
     </style>
 </head>
 <body>
@@ -550,10 +705,11 @@
         <div class="loader-noise"></div>
         
         <div class="loader-content">
+                <div class="cake-icon-anim"><div class="flames"><span></span><span></span><span></span></div></div>
             <div class="wave-container" style="width: 120px; height: 20px; margin: 20px auto; position: relative; overflow: hidden;"><svg class="wave-svg" viewBox="0 0 240 20" xmlns="http://www.w3.org/2000/svg"><path d="M 0 10 Q 15 7, 30 10 T 60 10 T 90 10 T 120 10 T 150 10 T 180 10 T 210 10 T 240 10" fill="none" stroke="var(--bg-dark)" stroke-width="1.5" stroke-linecap="round"/></svg></div>
             <h1 class="loader-title">50<sub>°</sub></h1>
-            <h1 class="loader-subtitle">compleanno</h1>
             <h2 class="loader-name">Cristianino</h2>
+            <h1 class="loader-subtitle">Happy Birthday</h1>
             <div class="wave-container" style="width: 120px; height: 20px; margin: 20px auto; position: relative; overflow: hidden;"><svg class="wave-svg" viewBox="0 0 240 20" xmlns="http://www.w3.org/2000/svg"><path d="M 0 10 Q 15 7, 30 10 T 60 10 T 90 10 T 120 10 T 150 10 T 180 10 T 210 10 T 240 10" fill="none" stroke="var(--bg-dark)" stroke-width="1.5" stroke-linecap="round"/></svg></div>
         </div>
     </div>
@@ -572,7 +728,8 @@
             <div class="wave-container" style="width: 120px; height: 20px; margin: 20px auto; position: relative; overflow: hidden;"><svg class="wave-svg" viewBox="0 0 240 20" xmlns="http://www.w3.org/2000/svg"><path d="M 0 10 Q 15 7, 30 10 T 60 10 T 90 10 T 120 10 T 150 10 T 180 10 T 210 10 T 240 10" fill="none" stroke="var(--accent-gold)" stroke-width="1.5" stroke-linecap="round"/></svg></div>
             <div class="title-container">
                 <h1 class="anni">50<sub>°</sub></h1>
-                <h1 class="subtitle">compleanno</h1>
+                <h1 class="subtitle">anniversary</h1>
+                <h1 class="subsubtitle">— +34 —</h1>
             </div>
             <div class="wave-container" style="width: 120px; height: 20px; margin: 20px auto; position: relative; overflow: hidden;"><svg class="wave-svg" viewBox="0 0 240 20" xmlns="http://www.w3.org/2000/svg"><path d="M 0 10 Q 15 7, 30 10 T 60 10 T 90 10 T 120 10 T 150 10 T 180 10 T 210 10 T 240 10" fill="none" stroke="var(--accent-gold)" stroke-width="1.5" stroke-linecap="round"/></svg></div>
             <h2>Cristianino</h2>
@@ -589,7 +746,7 @@
         <h3>Una notte speciale</h3>
         <p>Cinquanta giri intorno al sole meritano di essere celebrati nel posto giusto, con la musica giusta e le persone migliori.<p>
         <p>Vi aspetto per un aperitivo al tramonto che sfumerà in una notte di festa, bassi profondi e brezza marina.</p>
-        <p style="color:var(--accent-gold); font-family: var(--font-title); font-size: 2rem; line-height: 1;"><strong>19 Agosto</strong> ore 19:30</p>
+        <p style="color:var(--accent-gold); font-family: var(--font-title); font-size: 2rem; line-height: 1;"><strong>23 Agosto</strong> ore 15:00</p>
         <p><strong>SAND BEACH CLUB</strong><br>— Sottomarina —</p>
     </section>
 
@@ -605,7 +762,7 @@
                     <input type="number" id="ospiti" name="ospiti" min="1" max="5" required>
                 </div>
                 <div class="form-group">
-                    <label>Sei un DJ? Porti i dischi per suonare?</label>
+                    <label>Sei un dj, un vocalist o un ballerino? Prepara la borsa!</label>
                     <div class="radio-group">
                         <label><input type="radio" name="dj" value="si"> Certo, preparo la borsa!</label>
                         <label><input type="radio" name="dj" value="no" checked> No, stasera solo drink.</label>
@@ -618,6 +775,47 @@
                 <button type="submit" class="submit-btn">Conferma Presenza</button>
             </form>
         </div>
+
+        <footer class="footer-bike">
+            <div class="container">
+                <h3>Un piccolo pensiero</h3>
+                <p>Non servono regali, la vostra presenza è tutto ciò che desidero.</p>
+                <div class="wave-container" style="width: 120px; height: 20px; margin: 20px auto; position: relative; overflow: hidden;"><svg class="wave-svg" viewBox="0 0 240 20" xmlns="http://www.w3.org/2000/svg"><path d="M 0 10 Q 15 7, 30 10 T 60 10 T 90 10 T 120 10 T 150 10 T 180 10 T 210 10 T 240 10" fill="none" stroke="var(--bg-dark)" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+                    <div class="bike-svg-container">
+                        <svg viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg" class="animated-bike">
+                            
+                            <path d="M 20 40 L 35 18 L 68 18 L 80 40 M 35 18 L 45 40 L 20 40 M 45 40 L 68 18 M 35 18 L 33 12 M 28 12 L 38 12 M 68 18 L 72 12 L 76 14" fill="none" stroke="var(--bg-dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            
+                            <g transform="translate(20, 40)">
+                                <g class="spinning-wheel">
+                                    <circle cx="0" cy="0" r="12" fill="none" stroke="var(--bg-dark)" stroke-width="2"/>
+                                    <line x1="0" y1="-12" x2="0" y2="12" stroke="var(--bg-dark)" stroke-width="1"/>
+                                    <line x1="-12" y1="0" x2="12" y2="0" stroke="var(--bg-dark)" stroke-width="1"/>
+                                    <line x1="-8.5" y1="-8.5" x2="8.5" y2="8.5" stroke="var(--bg-dark)" stroke-width="1"/>
+                                    <line x1="-8.5" y1="8.5" x2="8.5" y2="-8.5" stroke="var(--bg-dark)" stroke-width="1"/>
+                                </g>
+                            </g>
+
+                            <g transform="translate(80, 40)">
+                                <g class="spinning-wheel">
+                                    <circle cx="0" cy="0" r="12" fill="none" stroke="var(--bg-dark)" stroke-width="2"/>
+                                    <line x1="0" y1="-12" x2="0" y2="12" stroke="var(--bg-dark)" stroke-width="1"/>
+                                    <line x1="-12" y1="0" x2="12" y2="0" stroke="var(--bg-dark)" stroke-width="1"/>
+                                    <line x1="-8.5" y1="-8.5" x2="8.5" y2="8.5" stroke="var(--bg-dark)" stroke-width="1"/>
+                                    <line x1="-8.5" y1="8.5" x2="8.5" y2="-8.5" stroke="var(--bg-dark)" stroke-width="1"/>
+                                </g>
+                            </g>
+                        </svg>
+                    </div>
+                <p><strong>"Fondo per la Nuova Bici<br> di Cristianino"</strong></p>
+                <div class="wave-container" style="width: 120px; height: 20px; margin: 20px auto; position: relative; overflow: hidden;"><svg class="wave-svg" viewBox="0 0 240 20" xmlns="http://www.w3.org/2000/svg"><path d="M 0 10 Q 15 7, 30 10 T 60 10 T 90 10 T 120 10 T 150 10 T 180 10 T 210 10 T 240 10" fill="none" stroke="var(--bg-dark)" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+                <p>Se anche tu vuoi il mio bene basta un piccolo gesto:</p>
+                <div class="iban-container" onclick="copyIban()">
+                    <span class="iban-label" id="iban-tooltip">Clicca per copiare l'IBAN</span>
+                <div class="iban-number">IT12 A345 6789 0123 4567 8901 234</div>
+    </div>
+            </div>
+        </footer>
 
         <div id="live-guest-counter" class="guest-counter-container">
             <div class="counter-number" data-target="64">0</div>
@@ -643,18 +841,10 @@
                 <span class="author">— Paolo T.</span>
             </div>
         </div>
+        <p class="closing-text">See you there!</p>
     </section>
 
-    <footer class="footer-bike">
-        <div class="container">
-            <h3>Un piccolo pensiero</h3>
-            <p>Non servono regali, la vostra presenza è tutto ciò che desidero.</p>
-            <div class="wave-container" style="width: 120px; height: 20px; margin: 20px auto; position: relative; overflow: hidden;"><svg class="wave-svg" viewBox="0 0 240 20" xmlns="http://www.w3.org/2000/svg"><path d="M 0 10 Q 15 7, 30 10 T 60 10 T 90 10 T 120 10 T 150 10 T 180 10 T 210 10 T 240 10" fill="none" stroke="var(--bg-dark)" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-            <p>Se avete piacere di partecipare al <strong>"Fondo per la Nuova Bici<br> di Cristianino"</strong></p>
-            <div class="wave-container" style="width: 120px; height: 20px; margin: 20px auto; position: relative; overflow: hidden;"><svg class="wave-svg" viewBox="0 0 240 20" xmlns="http://www.w3.org/2000/svg"><path d="M 0 10 Q 15 7, 30 10 T 60 10 T 90 10 T 120 10 T 150 10 T 180 10 T 210 10 T 240 10" fill="none" stroke="var(--bg-dark)" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-            <p>Troverete un angolo dedicato al locale la sera della festa.</p>
-        </div>
-    </footer>
+    
 
 </body>
 
@@ -793,6 +983,32 @@
 
     // Avvia le particelle dopo che il loader si è alzato
     setTimeout(createParticles, 2000);
+
+    // === FUNZIONE COPIA IBAN AUTOMATICA ===
+    function copyIban() {
+        // INSERISCI QUI IL VERO IBAN SENZA SPAZI (Questo è quello che verrà incollato nella banca)
+        const ibanTextToCopy = "IT12A3456789012345678901234"; 
+        
+        const container = document.querySelector('.iban-container');
+        const tooltip = document.getElementById('iban-tooltip');
+        
+        // API moderna per copiare negli appunti del dispositivo
+        navigator.clipboard.writeText(ibanTextToCopy).then(() => {
+            // Applica le classi per il feedback visivo di successo
+            container.classList.add('iban-success');
+            tooltip.innerText = "✓ IBAN COPIATO!";
+            
+            // Dopo 2.5 secondi, fa tornare il bottone allo stato originale
+            setTimeout(() => {
+                container.classList.remove('iban-success');
+                tooltip.innerText = "Clicca per copiare l'IBAN";
+            }, 2500);
+        }).catch(err => {
+            // Fallback in caso di errore (es. permessi browser bloccati)
+            console.error('Errore nella copia: ', err);
+            tooltip.innerText = "Errore: copia manualmente";
+        });
+    }
 
 </script>
 
